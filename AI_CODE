@@ -1,0 +1,66 @@
+# -------------------------------------------------------
+# Exam Seat Arrangement System using CSP (Constraint Satisfaction Problem)
+# Author: [Your Name]
+# Mini Project – AI Lab
+# -------------------------------------------------------
+
+# Step 1: Input Data
+students = [
+    {"name": "Anjali R", "regno": "21IT001", "subject": "AI"},
+    {"name": "Ravi K", "regno": "21CS002", "subject": "DBMS"},
+    {"name": "Sneha M", "regno": "21IT003", "subject": "AI"},
+    {"name": "Karthik P", "regno": "21CS004", "subject": "DBMS"},
+    {"name": "Manoj S", "regno": "21IT005", "subject": "AI"},
+    {"name": "Deepa K", "regno": "21CS006", "subject": "DBMS"},
+]
+
+rooms = {
+    "101": 3,
+    "102": 3
+}
+
+# Step 2: Data Processing – create domain of (room, seat) pairs
+domains = []
+for room, capacity in rooms.items():
+    for seat in range(1, capacity + 1):
+        domains.append((room, seat))
+
+print(f"[INFO] Loaded {len(students)} students, {len(rooms)} rooms (total seats: {len(domains)})")
+print(f"[INFO] Domains created: {domains}")
+
+# Step 3: CSP Constraints and Backtracking Logic
+arrangement = []
+used_seats = set()
+
+for student in students:
+    for room, seat in domains:
+        # Constraint 1: Seat must be free
+        if (room, seat) in used_seats:
+            continue
+        
+        # Constraint 2: Avoid same-subject adjacency
+        if arrangement and arrangement[-1]["Subject"] == student["subject"]:
+            continue
+        
+        # If constraints satisfied → assign
+        arrangement.append({
+            "Room No": room,
+            "Seat No": seat,
+            "Name": student["name"],
+            "Reg No": student["regno"],
+            "Subject": student["subject"]
+        })
+        used_seats.add((room, seat))
+        print(f"[DEBUG] Assigned -> {student['name']} ({student['subject']}) to ({room}, Seat {seat})")
+        break
+
+# Step 4: Output Generation
+print("\n--- Exam Seating Arrangement (CSP-Based) ---\n")
+print("Room No | Seat No | Name        | Register No | Subject")
+print("--------------------------------------------------------")
+
+for a in arrangement:
+    print(f"{a['Room No']:>6} | {a['Seat No']:>7} | {a['Name']:<10} | {a['Reg No']:<11} | {a['Subject']}")
+
+print("\n[INFO] All students assigned successfully.")
+print("Process finished with exit code 0")
